@@ -1,7 +1,7 @@
-`ifndef REGISTER
-`define REGISTER
+`ifndef accumulator
+`define accumulator
 
-module REGISTER #(
+module accumulator #(
     parameter BITWIDTH=32
 ) (
     input wire iClk,
@@ -9,7 +9,7 @@ module REGISTER #(
     input wire iEn,
     input wire iClr,
     input wire [BITWIDTH-1 : 0] iData,
-    output reg [BITWIDTH-1 : 0] oData
+    output reg [BITWIDTH : 0] oData
 );
 
     always@(posedge iClk or negedge iRstN) begin
@@ -20,9 +20,9 @@ module REGISTER #(
                 oData <= 0;
             end else begin
                 if (iEn) begin
-                    oData <= iData;
+                    oData <= iData + oData;
                 end else begin
-                    oData <= iData;
+                    oData <= oData;
                 end
             end
         end
