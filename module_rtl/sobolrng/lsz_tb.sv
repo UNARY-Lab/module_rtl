@@ -1,6 +1,5 @@
 `timescale 1ns/1ns
 
-`include "sobolrng.def"
 `include "lsz.v"
 
 module lsz_tb ();
