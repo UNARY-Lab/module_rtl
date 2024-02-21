@@ -6,8 +6,9 @@
 `include "lsz.v"
 `include "cntwithen.v"
 
-// this code implements m_i = in paper Algorithm 659: Implementing Sobol's quasirandom sequence generator
+// this code implements m_i = 1 for dim1 in paper Algorithm 659: Implementing Sobol's quasirandom sequence generator
 // https://dl.acm.org/doi/10.1145/42288.214372
+// supported BITWIDTH are 3-10
 module sobolrng (
     input wire iClk,    // Clock
     input wire iRstN,  // Asynchronous reset active low
