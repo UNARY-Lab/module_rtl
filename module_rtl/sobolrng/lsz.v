@@ -34,30 +34,14 @@ module lsz (
         case(oOneHot)
             'd1 : lszIdx = 'd0;
             'd2 : lszIdx = 'd1;
-            `ifdef BITWIDTH 3
-                'd4 : lszIdx = 'd2;
-            `endif
-            `ifdef BITWIDTH 4
-                'd8 : lszIdx = 'd3;
-            `endif
-            `ifdef BITWIDTH 5
-                'd16 : lszIdx = 'd4;
-            `endif
-            `ifdef BITWIDTH 6
-                'd32 : lszIdx = 'd5;
-            `endif
-            `ifdef BITWIDTH 7
-                'd64 : lszIdx = 'd6;
-            `endif
-            `ifdef BITWIDTH 8
-                'd128 : lszIdx = 'd7;
-            `endif
-            `ifdef BITWIDTH 9
-                'd256 : lszIdx = 'd8;
-            `endif
-            `ifdef BITWIDTH 10
-                'd512 : lszIdx = 'd9;
-            `endif
+            'd4 : lszIdx = 'd2;
+            'd8 : lszIdx = 'd3;
+            'd16 : lszIdx = 'd4;
+            'd32 : lszIdx = 'd5;
+            'd64 : lszIdx = 'd6;
+            'd128 : lszIdx = 'd7;
+            'd256 : lszIdx = 'd8;
+            'd512 : lszIdx = 'd9;
             default : lszIdx = 'd0;
         endcase
     end

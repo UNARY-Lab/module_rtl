@@ -8,7 +8,7 @@
 
 // this code implements m_i = 1 for dim1 in paper Algorithm 659: Implementing Sobol's quasirandom sequence generator
 // https://dl.acm.org/doi/10.1145/42288.214372
-// supported BITWIDTH are 3-10
+// supported BITWIDTH are 2-10
 module sobolrng (
     input wire iClk,    // Clock
     input wire iRstN,  // Asynchronous reset active low
@@ -35,6 +35,11 @@ module sobolrng (
         );
 
     /* initialization of directional vectors for current dimension*/
+    `ifdef BITWIDTH2
+        assign dirVec[1*`BITWIDTH-1 : 0*`BITWIDTH] = 'd2;
+        assign dirVec[2*`BITWIDTH-1 : 1*`BITWIDTH] = 'd1;
+    `endif
+    
     `ifdef BITWIDTH3
         assign dirVec[1*`BITWIDTH-1 : 0*`BITWIDTH] = 'd4;
         assign dirVec[2*`BITWIDTH-1 : 1*`BITWIDTH] = 'd2;
