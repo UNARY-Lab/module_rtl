@@ -1,0 +1,3 @@
+`define BITWIDTH 8
+`define BITWIDTH8
+`define LOGBITWIDTH $clog2(`BITWIDTH)
