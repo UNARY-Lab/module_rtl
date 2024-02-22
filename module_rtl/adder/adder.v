@@ -4,10 +4,6 @@
 `include "adder.def"
 
 module adder (
-    input wire iClk,
-    input wire iRstN,
-    input wire iEn,
-    input wire iClr,
     input wire [`BITWIDTH-1 : 0] iData0,
     input wire [`BITWIDTH-1 : 0] iData1,
     output reg [`BITWIDTH : 0] oData
