@@ -1,5 +1,5 @@
-`ifndef adder
-`define adder
+`ifndef mod_adder
+`define mod_adder
 
 `include "mod_adder.def"
 
