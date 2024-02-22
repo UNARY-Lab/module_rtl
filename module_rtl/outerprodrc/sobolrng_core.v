@@ -7,6 +7,7 @@ module sobolrng_core (
     input wire iClk,    // Clock
     input wire iRstN,  // Asynchronous reset active low
     input wire iEn,
+    input wire iClr,
     input wire [`BITWIDTH-1:0] iOneHot, // iOneHot
     input wire [`BITWIDTH*`BITWIDTH-1:0] dirVec,
     output reg [`BITWIDTH-1:0] oRand // output random number
@@ -29,10 +30,14 @@ module sobolrng_core (
         if(~iRstN) begin
             oRand <= 0;
         end else begin
-            if(iEn) begin
-                oRand <= oRand ^ vec;
+            if(iClr) begin
+                oRand <= 0;
             end else begin
-                oRand <= oRand;
+                if(iEn) begin
+                    oRand <= oRand ^ vec;
+                end else begin
+                    oRand <= oRand;
+                end
             end
         end
     end

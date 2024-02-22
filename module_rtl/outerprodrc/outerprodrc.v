@@ -31,6 +31,7 @@ module outerprodrc #(
                 .iClk(iClk),
                 .iRstN(iRstN),
                 .iEn(iEn),
+                .iClr(iClr),
                 .sobolSeq(ctlSeq[(i+1)*`BITWIDTH-1:i*`BITWIDTH])
                 );
             
@@ -42,6 +43,7 @@ module outerprodrc #(
                 .iClk(iClk),
                 .iRstN(iRstN),
                 .iEn(bitStream0[i]),
+                .iClr(iClr),
                 .sobolSeq(sobolSeq[(i+1)*`BITWIDTH-1:i*`BITWIDTH])
                 );
             

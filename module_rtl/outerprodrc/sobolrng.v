@@ -13,6 +13,7 @@ module sobolrng (
     input wire iClk,    // Clock
     input wire iRstN,  // Asynchronous reset active low
     input wire iEn,
+    input wire iClr,
     output reg [`BITWIDTH-1:0]sobolSeq
 );
 
@@ -25,6 +26,7 @@ module sobolrng (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
+        .iClr(iClr),
         .oCnt(cntNum)
         );
 
@@ -120,6 +122,7 @@ module sobolrng (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
+        .iClr(iClr),
         .iOneHot(oneHot),
         .dirVec(dirVec),
         .oRand(sobolSeq)

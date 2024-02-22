@@ -1,6 +1,5 @@
 `timescale 1ns/1ns
 
-`include "outerprodrc.def"
 `include "outerprodrc.v"
 
 module outerprodrc_tb ();
