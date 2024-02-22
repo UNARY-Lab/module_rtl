@@ -1,22 +1,24 @@
 `timescale 1ns/1ns
 
-`include "register.v"
+`include "adder_reg.v"
 
-module register_tb ();
+module adder_reg_tb ();
 
     logic iClk;
     logic iRstN;
     logic iEn;
     logic iClr;
-    logic [`BITWIDTH-1 : 0] iData;
-    logic [`BITWIDTH-1 : 0] oData;
+    logic [`BITWIDTH-1 : 0] iData0;
+    logic [`BITWIDTH-1 : 0] iData1;
+    logic [`BITWIDTH : 0] oData;
 
-    register u_register (
+    adder_reg u_adder_reg (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
         .iClr(iClr),
-        .iData(iData),
+        .iData0(iData0),
+        .iData1(iData1),
         .oData(oData)
     );
 
@@ -24,7 +26,7 @@ module register_tb ();
     always #5 iClk = ~iClk;
 
     initial begin
-        $dumpfile("register.vcd"); $dumpvars;
+        $dumpfile("adder_reg.vcd"); $dumpvars;
     end
 
     initial
@@ -33,19 +35,12 @@ module register_tb ();
         iRstN = 0;
         iEn = 1;
         iClr = 0;
-        iData = 0;
+        iData0 = 'd10;
+        iData1 = 'd20;
         
         #15;
         iRstN = 1;
-        #10;
-        iData = 'd10;
-        #10;
-        iData = 'd100;
-        #10;
-        iData = 'd1000;
-        #10;
-        iData = 'd10000;
-        #10;
+        #100;
         iClr = 1;
         #400;
         $finish;
