@@ -8,6 +8,7 @@
 |adder|&check;||
 |adder_reg|&check;||
 |adder_bfloat16_reg|&check;||
+|fifo_sync|&check;||
 |multiplier_bfloat16_reg|&check;||
 |outerprodrc|&check;||
 |register|&check;||
