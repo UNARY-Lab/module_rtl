@@ -1,15 +1,15 @@
 `ifndef register
 `define register
 
-module register #(
-    parameter BITWIDTH=32
-) (
+`include "register.def"
+
+module register (
     input wire iClk,
     input wire iRstN,
     input wire iEn,
     input wire iClr,
-    input wire [BITWIDTH-1 : 0] iData,
-    output reg [BITWIDTH-1 : 0] oData
+    input wire [`BITWIDTH-1 : 0] iData,
+    output reg [`BITWIDTH-1 : 0] oData
 );
 
     always@(posedge iClk or negedge iRstN) begin
