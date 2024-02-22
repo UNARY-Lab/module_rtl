@@ -7,6 +7,7 @@ module cntwithen (
     input wire iClk,    // Clock
     input wire iRstN,  // Asynchronous reset active low
     input wire iEn,
+    input wire iClr,
     output reg [`BITWIDTH-1:0] oCnt
 );
 
@@ -14,7 +15,11 @@ module cntwithen (
         if(~iRstN) begin
             oCnt <= 0;
         end else begin
-            oCnt <= oCnt + iEn;
+            if (iClr) begin
+                oCnt <= 0;
+            end else begin
+                oCnt <= oCnt + iEn;
+            end
         end
     end
 
