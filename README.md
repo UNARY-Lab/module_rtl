@@ -7,11 +7,22 @@
 |accumulator|&check;||
 |adder|&check;||
 |adder_reg|&check;||
-|mod_accumulator|&check;||
-|mod_adder|&check;||
-|mod_adder_reg|&check;||
+|adder_bfloat16_reg|&check;||
+|multiplier_bfloat16_reg|&check;||
 |outerprodrc|&check;||
 |register|&check;||
 |sobolrng|&check;||
+
+
+|Module|Verification|Synthesis|
+|---|---|---|
+|mod_accumulator|&check;||
+|mod_adder|&check;||
+|mod_adder_reg|&check;||
+|mod_doubler|&check;||
+|mod_doubler_reg|&check;||
+|mod_quadrupler|&check;||
+|mod_quadrupler_reg|&check;||
+
 
 To allow synthesis on UCF CECS machines, please refer to automated scripts [here](https://github.com/UNARY-Lab/Tools/tree/main/script-auto-syn-pr-ucf-cecs).
