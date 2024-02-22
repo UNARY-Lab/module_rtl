@@ -1,15 +1,15 @@
 `ifndef accumulator
 `define accumulator
 
-module accumulator #(
-    parameter BITWIDTH=32
-) (
+`include "accumulator.def"
+
+module accumulator (
     input wire iClk,
     input wire iRstN,
     input wire iEn,
     input wire iClr,
-    input wire [BITWIDTH-1 : 0] iData,
-    output reg [BITWIDTH : 0] oData
+    input wire [`BITWIDTH-1 : 0] iData,
+    output reg [`BITWIDTH : 0] oData
 );
 
     always@(posedge iClk or negedge iRstN) begin
