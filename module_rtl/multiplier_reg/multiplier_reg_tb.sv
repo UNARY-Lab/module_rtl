@@ -1,8 +1,8 @@
 `timescale 1ns/1ns
 
-`include "multiplier.v"
+`include "multiplier_reg.v"
 
-module multiplier_tb ();
+module multiplier_reg_tb ();
 
     logic iClk;
     logic iRstN;
@@ -12,7 +12,11 @@ module multiplier_tb ();
     logic [`BITWIDTH-1 : 0] iData1;
     logic [2*`BITWIDTH-1 : 0] oData;
 
-    multiplier u_multiplier (
+    multiplier_reg u_multiplier_reg (
+        .iClk(iClk),
+        .iRstN(iRstN),
+        .iEn(iEn),
+        .iClr(iClr),
         .iData0(iData0),
         .iData1(iData1),
         .oData(oData)
@@ -22,7 +26,7 @@ module multiplier_tb ();
     always #5 iClk = ~iClk;
 
     initial begin
-        $dumpfile("multiplier.vcd"); $dumpvars;
+        $dumpfile("multiplier_reg.vcd"); $dumpvars;
     end
 
     initial
