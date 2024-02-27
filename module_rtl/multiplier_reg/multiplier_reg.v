@@ -4,7 +4,6 @@
 `include "multiplier_reg.def"
 
 
-// if the bitwidth of this module is equal to or larger than 32, it shall be the multiple of 32.
 module multiplier_reg (
     input wire iClk,
     input wire iRstN,
