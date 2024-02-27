@@ -10,6 +10,8 @@
 |adder_bfloat16_reg|&check;||
 |fifo_sync|&check;||
 |multiplier_bfloat16_reg|&check;||
+|multiplier_64b_reg|||
+|multiplier_128b_reg|||
 |outerprodrc|&check;||
 |register|&check;||
 |sobolrng|&check;||
