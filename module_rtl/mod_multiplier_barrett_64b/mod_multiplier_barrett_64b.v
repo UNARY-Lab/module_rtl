@@ -8,7 +8,7 @@
 // another paper: 'Modular Reduction without Pre-Computation for Special Moduli' is using non 2 base
 // original paper: 'Implementing the Rivest Shamir and Adleman Public Key Encryption Algorithm on a Standard Digital Signal Processor'
 
-// this module needs 10 cycles to finish, and the iMod requires the value to have 64 bits, iK is fixed to 64
+// this module needs 19 cycles to finish, and the iMod requires the value to have 64 bits, iK is fixed to 64
 module mod_multiplier_barrett_64b (
     input wire iClk,
     input wire iRstN,
@@ -42,7 +42,7 @@ module mod_multiplier_barrett_64b (
     wire [4*64-1 : 0] m3q;
     wire [2*64-1 : 0] t;
     
-    // 1 cycle
+    // 4 cycle
     multiplier_64b_reg u_multiplier_64b_reg_z (
         .iClk(iClk),
         .iRstN(iRstN),
@@ -55,7 +55,7 @@ module mod_multiplier_barrett_64b (
 
     assign m1 = z[2*64-1 : 64];
 
-    // 4 cycles
+    // 7 cycles
     // iU will have more than 64 bits, thus m2 will have more than 64 bit
     multiplier_128b_reg u_multiplier_128b_reg_m2 (
         .iClk(iClk),
@@ -70,7 +70,7 @@ module mod_multiplier_barrett_64b (
     // approximately 20-30 MSBs are 0 for m3
     assign m3 = m2[3*64-1 : 64];
 
-    // 4 cycles
+    // 7 cycles
     multiplier_128b_reg u_multiplier_128b_reg_m3q (
         .iClk(iClk),
         .iRstN(iRstN),

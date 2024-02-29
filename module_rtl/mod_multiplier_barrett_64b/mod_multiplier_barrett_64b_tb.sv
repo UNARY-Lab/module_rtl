@@ -13,7 +13,7 @@ module mod_multiplier_barrett_64b_tb ();
     logic [64-1 : 0] iData1;
     logic [64-1 : 0] iMod;
     logic [64-1 : 0] oData;
-    logic [64-1 : 0] result [9:0];
+    logic [64-1 : 0] result [18:0];
     logic result_correct;
 
     mod_multiplier_barrett_64b u_mod_multiplier_barrett_64b (
@@ -32,6 +32,15 @@ module mod_multiplier_barrett_64b_tb ();
     always #5 iClk = ~iClk;
 
     always@(posedge iClk) begin
+        result[18] <= result[17];
+        result[17] <= result[16];
+        result[16] <= result[15];
+        result[15] <= result[14];
+        result[14] <= result[13];
+        result[13] <= result[12];
+        result[12] <= result[11];
+        result[11] <= result[10];
+        result[10] <= result[9];
         result[9] <= result[8];
         result[8] <= result[7];
         result[7] <= result[6];
@@ -43,7 +52,7 @@ module mod_multiplier_barrett_64b_tb ();
         result[1] <= result[0];
         result[0] <= (iData0 * iData1) % iMod;
     end
-    assign result_correct = (oData == result[9]);
+    assign result_correct = (oData == result[18]);
 
     initial begin
         $dumpfile("mod_multiplier_barrett_64b.vcd"); $dumpvars;
@@ -64,7 +73,7 @@ module mod_multiplier_barrett_64b_tb ();
         #15;
         iRstN = 1;
         repeat (10)
-        #100 {iData0, iData1} = {$urandom(), $urandom()}; 
+        #190 {iData0, iData1} = {$urandom(), $urandom()}; 
         iClr = 1;
         #40;
         $finish;
