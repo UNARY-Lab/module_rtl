@@ -24,7 +24,8 @@
 |mod_adder_reg|&check;||
 |mod_doubler|&check;||
 |mod_doubler_reg|&check;||
-|mod_multiplier_barrett|||
+|mod_multiplier_barrett_32b|||
+|mod_multiplier_barrett_64b|||
 |mod_multiplier_montgomery|||
 |mod_quadrupler|&check;||
 |mod_quadrupler_reg|&check;||
