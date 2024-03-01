@@ -8,7 +8,7 @@
 // another paper: 'Modular Reduction without Pre-Computation for Special Moduli' is using non 2 base
 // original paper: 'Implementing the Rivest Shamir and Adleman Public Key Encryption Algorithm on a Standard Digital Signal Processor'
 
-// this module needs 10 cycles to finish, and the iMod requires the value to have 32 bits, iK is fixed to 32
+// this module needs 7 cycles to finish
 module mod_multiplier_barrett_32b (
     input wire iClk,
     input wire iRstN,
@@ -25,21 +25,17 @@ module mod_multiplier_barrett_32b (
 );
 
     // only pipeline multiplication
+    // bitwidth analysis can be found here: https://www.nayuki.io/page/barrett-reduction-algorithm
     // z = iData0 * iData1
     wire [2*32-1 : 0] z;
     // m1 = z >> iK
     wire [2*32-1 : 0] m1;
     // m2 = iU * m1
-    // 64 bits + 32 bits, i.e., 96 valid bits
-    // use a 64 bit multiplier
     wire [4*32-1 : 0] m2;
     // m3 = m2 >> iK
-    // 64 bits
     wire [2*32-1 : 0] m3;
     // m3q = m3 * iMod
-    // 64 bits + 32 bits, i.e., 96 valid bits
-    // use a 64 bit multiplier
-    wire [4*32-1 : 0] m3q;
+    wire [2*32-1 : 0] m3q;
     wire [2*32-1 : 0] t;
     
     // 1 cycle
@@ -69,18 +65,18 @@ module mod_multiplier_barrett_32b (
 
     assign m3 = m2 >> iK;
 
-    // 4 cycles
-    multiplier_64b_reg u_multiplier_64b_reg_m3q (
+    // 1 cycles
+    multiplier_32b_reg u_multiplier_32b_reg_m3q (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
         .iClr(iClr),
         .iData0(m3),
-        .iData1({32'b0, iMod}),
+        .iData1(iMod),
         .oData(m3q)
     );
 
-    assign t = z - m3q[2*32-1 : 0];
+    assign t = z - m3q;
 
     // 1 cycle
     always@(posedge iClk or negedge iRstN) begin
