@@ -8,6 +8,7 @@ module mod_multiplier_barrett_32b_tb ();
     logic iRstN;
     logic iEn;
     logic iClr;
+    logic [5 : 0] iK;
     logic [2*32-1 : 0] iU;
     logic [32-1 : 0] iData0;
     logic [32-1 : 0] iData1;
@@ -21,6 +22,7 @@ module mod_multiplier_barrett_32b_tb ();
         .iRstN(iRstN),
         .iEn(iEn),
         .iClr(iClr),
+        .iK(iK),
         .iU(iU),
         .iData0(iData0),
         .iData1(iData1),
@@ -56,13 +58,21 @@ module mod_multiplier_barrett_32b_tb ();
         iEn = 1;
         iClr = 0;
         // (2^32)^2 / iMod
+        iK = 'd13;
+        iU = 'd8736;
+        iData0 = 'd1467;
+        iData1 = 'd2489;
+        iMod = 'd7681;
+        
+        #15;
+        iRstN = 1;
+        #200;
+        iK = 'b100000;
         iU = 'b100000000000000000000000000000001;
         iData0 = 'd0;
         iData1 = 'd0;
         iMod = 32'b11111111111111111111111111111111;
-        
-        #15;
-        iRstN = 1;
+        #100;
         repeat (10)
         #100 {iData0, iData1} = {$urandom(), $urandom()}; 
         iClr = 1;

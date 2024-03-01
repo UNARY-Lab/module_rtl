@@ -15,7 +15,7 @@ module mod_multiplier_barrett_32b (
     input wire iEn,
     input wire iClr,
     // precomputed input
-    // input wire [32-1 : 0] iK, // number of valid bits in iMod, which does not count the zero MSBs in iMod.
+    input wire [5 : 0] iK, // number of valid bits in iMod, which does not count the zero MSBs in iMod.
     input wire [2*32-1 : 0] iU,
     // actual input
     input wire [32-1 : 0] iData0,
@@ -27,13 +27,13 @@ module mod_multiplier_barrett_32b (
     // only pipeline multiplication
     // z = iData0 * iData1
     wire [2*32-1 : 0] z;
-    // m1 = z >> 32
-    wire [32-1 : 0] m1;
+    // m1 = z >> iK
+    wire [2*32-1 : 0] m1;
     // m2 = iU * m1
     // 64 bits + 32 bits, i.e., 96 valid bits
     // use a 64 bit multiplier
     wire [4*32-1 : 0] m2;
-    // m3 = m2 >> 32
+    // m3 = m2 >> iK
     // 64 bits
     wire [2*32-1 : 0] m3;
     // m3q = m3 * iMod
@@ -53,7 +53,7 @@ module mod_multiplier_barrett_32b (
         .oData(z)
     );
 
-    assign m1 = z[2*32-1 : 32];
+    assign m1 = z >> iK;
 
     // 4 cycles
     // iU will have more than 32 bits, thus m2 will have more than 32 bit
@@ -62,13 +62,12 @@ module mod_multiplier_barrett_32b (
         .iRstN(iRstN),
         .iEn(iEn),
         .iClr(iClr),
-        .iData0({32'b0, m1}),
+        .iData0(m1),
         .iData1(iU),
         .oData(m2)
     );
 
-    // approximately 20-30 MSBs are 0 for m3
-    assign m3 = m2[3*32-1 : 32];
+    assign m3 = m2 >> iK;
 
     // 4 cycles
     multiplier_64b_reg u_multiplier_64b_reg_m3q (

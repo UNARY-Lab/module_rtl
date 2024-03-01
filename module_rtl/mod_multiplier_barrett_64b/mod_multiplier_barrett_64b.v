@@ -8,14 +8,14 @@
 // another paper: 'Modular Reduction without Pre-Computation for Special Moduli' is using non 2 base
 // original paper: 'Implementing the Rivest Shamir and Adleman Public Key Encryption Algorithm on a Standard Digital Signal Processor'
 
-// this module needs 19 cycles to finish, and the iMod requires the value to have 64 bits, iK is fixed to 64
+// this module needs 19 cycles to finish
 module mod_multiplier_barrett_64b (
     input wire iClk,
     input wire iRstN,
     input wire iEn,
     input wire iClr,
     // precomputed input
-    // input wire [64-1 : 0] iK, // number of valid bits in iMod, which does not count the zero MSBs in iMod.
+    input wire [6 : 0] iK, // number of valid bits in iMod, which does not count the zero MSBs in iMod.
     input wire [2*64-1 : 0] iU,
     // actual input
     input wire [64-1 : 0] iData0,
@@ -27,13 +27,13 @@ module mod_multiplier_barrett_64b (
     // only pipeline multiplication
     // z = iData0 * iData1
     wire [2*64-1 : 0] z;
-    // m1 = z >> 64
-    wire [64-1 : 0] m1;
+    // m1 = z >> iK
+    wire [2*64-1 : 0] m1;
     // m2 = iU * m1
     // 128 bits + 64 bits, i.e., 96 valid bits
     // use a 128 bit multiplier
     wire [4*64-1 : 0] m2;
-    // m3 = m2 >> 64
+    // m3 = m2 >> iK
     // 128 bits
     wire [2*64-1 : 0] m3;
     // m3q = m3 * iMod
@@ -53,7 +53,7 @@ module mod_multiplier_barrett_64b (
         .oData(z)
     );
 
-    assign m1 = z[2*64-1 : 64];
+    assign m1 = z >> iK;
 
     // 7 cycles
     // iU will have more than 64 bits, thus m2 will have more than 64 bit
@@ -62,13 +62,12 @@ module mod_multiplier_barrett_64b (
         .iRstN(iRstN),
         .iEn(iEn),
         .iClr(iClr),
-        .iData0({64'b0, m1}),
+        .iData0(m1),
         .iData1(iU),
         .oData(m2)
     );
 
-    // approximately 20-30 MSBs are 0 for m3
-    assign m3 = m2[3*64-1 : 64];
+    assign m3 = m2 >> iK;
 
     // 7 cycles
     multiplier_128b_reg u_multiplier_128b_reg_m3q (

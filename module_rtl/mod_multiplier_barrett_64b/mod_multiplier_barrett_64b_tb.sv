@@ -8,6 +8,7 @@ module mod_multiplier_barrett_64b_tb ();
     logic iRstN;
     logic iEn;
     logic iClr;
+    logic [6 : 0] iK;
     logic [2*64-1 : 0] iU;
     logic [64-1 : 0] iData0;
     logic [64-1 : 0] iData1;
@@ -21,6 +22,7 @@ module mod_multiplier_barrett_64b_tb ();
         .iRstN(iRstN),
         .iEn(iEn),
         .iClr(iClr),
+        .iK(iK),
         .iU(iU),
         .iData0(iData0),
         .iData1(iData1),
@@ -65,15 +67,23 @@ module mod_multiplier_barrett_64b_tb ();
         iEn = 1;
         iClr = 0;
         // (2^64)^2 / iMod
+        iK = 'd13;
+        iU = 'd8736;
+        iData0 = 'd1467;
+        iData1 = 'd2489;
+        iMod = 'd7681;
+        
+        #15;
+        iRstN = 1;
+        #380;
+        iK = 'b1000000;
         iU = 'b10000000000000000000000000000000000000000000000000000000000000001;
         iData0 = 'd0;
         iData1 = 'd0;
         iMod = 64'b1111111111111111111111111111111111111111111111111111111111111111;
-        
-        #15;
-        iRstN = 1;
+        #190;
         repeat (10)
-        #190 {iData0, iData1} = {$urandom(), $urandom()}; 
+        #190 {iData0, iData1} = {$urandom(), $urandom(), $urandom(), $urandom()}; 
         iClr = 1;
         #40;
         $finish;
