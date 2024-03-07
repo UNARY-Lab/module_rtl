@@ -3,18 +3,21 @@
 `include "mod_adder.v"
 
 module mod_adder_tb ();
+    parameter BITWIDTH = 32;
 
     logic iClk;
     logic iRstN;
     logic iEn;
     logic iClr;
-    logic [`BITWIDTH-1 : 0] iData0;
-    logic [`BITWIDTH-1 : 0] iData1;
-    logic [`BITWIDTH-1 : 0] iQ;
-    logic [`BITWIDTH-1 : 0] oData;
-    logic [`BITWIDTH-1 : 0] result;
+    logic [BITWIDTH-1 : 0] iData0;
+    logic [BITWIDTH-1 : 0] iData1;
+    logic [BITWIDTH-1 : 0] iQ;
+    logic [BITWIDTH-1 : 0] oData;
+    logic [BITWIDTH-1 : 0] result;
 
-    mod_adder u_mod_adder (
+    mod_adder #(
+        .BITWIDTH(BITWIDTH)
+    ) u_mod_adder (
         .iData0(iData0),
         .iData1(iData1),
         .iQ(iQ),
