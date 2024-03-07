@@ -1,20 +1,19 @@
 `timescale 1ns/1ns
 
-`include "multiplier_32b_reg_pp.v"
+`include "multiplier_64b_reg_pp.v"
 
-module multiplier_32b_reg_pp_tb ();
-    
+module multiplier_64b_reg_pp_tb ();
     logic iClk;
     logic iRstN;
     logic iEn;
     logic iClr;
-    logic [32-1 : 0] iData0;
-    logic [32-1 : 0] iData1;
-    logic [2*32-1 : 0] oData;
-
+    logic [64-1 : 0] iData0;
+    logic [64-1 : 0] iData1;
+    logic [2*64-1 : 0] oData;
+    
     // This code is used to delay the expected output
-    parameter PPCYCLE = 1;
-    parameter OBITWIDTH = 2*32;
+    parameter PPCYCLE = 3;
+    parameter OBITWIDTH = 2*64;
     // dont change code below
     logic [OBITWIDTH-1 : 0] result [PPCYCLE-1:0];
     logic result_correct;
@@ -42,7 +41,7 @@ module multiplier_32b_reg_pp_tb ();
     assign result_correct = (oData == result[PPCYCLE-1]);
     // end here
 
-    multiplier_32b_reg_pp u_multiplier_32b_reg_pp (
+    multiplier_64b_reg_pp u_multiplier_64b_reg_pp (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
@@ -56,7 +55,7 @@ module multiplier_32b_reg_pp_tb ();
     always #5 iClk = ~iClk;
 
     initial begin
-        $dumpfile("multiplier_32b_reg_pp.vcd"); $dumpvars;
+        $dumpfile("multiplier_64b_reg_pp.vcd"); $dumpvars;
     end
 
     initial
@@ -71,7 +70,7 @@ module multiplier_32b_reg_pp_tb ();
         #200;
         iRstN = 1;
         repeat (100) 
-        #10 {iData0, iData1} = {$urandom(), $urandom()}; 
+        #10 {iData0, iData1} = {$urandom(), $urandom(), $urandom(), $urandom()}; 
         iClr = 1;
         #100;
         $finish;
