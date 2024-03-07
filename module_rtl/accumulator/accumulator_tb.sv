@@ -3,15 +3,18 @@
 `include "accumulator.v"
 
 module accumulator_tb ();
+    parameter BITWIDTH = 32;
 
     logic iClk;
     logic iRstN;
     logic iEn;
     logic iClr;
-    logic [`BITWIDTH-1 : 0] iData;
-    logic [`BITWIDTH : 0] oData;
+    logic [BITWIDTH-1 : 0] iData;
+    logic [BITWIDTH : 0] oData;
 
-    accumulator u_accumulator (
+    accumulator #(
+        .BITWIDTH(BITWIDTH)
+    ) u_accumulator (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
