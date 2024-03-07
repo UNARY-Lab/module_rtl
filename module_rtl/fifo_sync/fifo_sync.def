@@ -1,3 +1,0 @@
-`define BITWIDTH 8
-`define DEPTH 8
-`define PTRWIDTH $clog2(`DEPTH)

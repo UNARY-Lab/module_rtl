@@ -3,6 +3,9 @@
 `include "fifo_sync.v"
 
 module fifo_sync_tb();
+    parameter BITWIDTH = 8;
+    parameter DEPTH = 8;
+
     reg iClk, iRstN;
     reg iEnW, iEnR;
     reg iClr;
@@ -10,7 +13,10 @@ module fifo_sync_tb();
     wire [7:0] oData;
     wire oFull, oEmpty;
 
-    fifo_sync u_fifo_sync(iClk, iRstN, iEnW, iEnR, iClr, iData, oData, oFull, oEmpty);
+    fifo_sync #(
+        .BITWIDTH(BITWIDTH),
+        .DEPTH(DEPTH)
+    ) u_fifo_sync(iClk, iRstN, iEnW, iEnR, iClr, iData, oData, oFull, oEmpty);
 
     always #2 iClk = ~iClk;
     initial begin
