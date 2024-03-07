@@ -3,16 +3,19 @@
 `include "mod_accumulator.v"
 
 module mod_accumulator_tb ();
+    parameter BITWIDTH = 32;
 
     logic iClk;
     logic iRstN;
     logic iEn;
     logic iClr;
-    logic [`BITWIDTH-1 : 0] iData;
-    logic [`BITWIDTH-1 : 0] iQ;
-    logic [`BITWIDTH-1 : 0] oData;
+    logic [BITWIDTH-1 : 0] iData;
+    logic [BITWIDTH-1 : 0] iQ;
+    logic [BITWIDTH-1 : 0] oData;
 
-    mod_accumulator u_mod_accumulator (
+    mod_accumulator #(
+        .BITWIDTH(BITWIDTH)
+    ) u_mod_accumulator (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
