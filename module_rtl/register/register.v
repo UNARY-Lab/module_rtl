@@ -22,7 +22,7 @@ module register #(
                 if (iEn) begin
                     oData <= iData;
                 end else begin
-                    oData <= iData;
+                    oData <= oData;
                 end
             end
         end
