@@ -90,8 +90,12 @@ module mod_multiplier_barrett_32b_pp_tb ();
         
         #205;
         iRstN = 1;
-        repeat (100)
-        #10 {iData0, iData1} = {$urandom(), $urandom()};
+        repeat (100) begin
+            #10 {iData0, iData1} = {$urandom(), $urandom()};
+            // iU = iU ^ 'b100000000000000000000000000000001;
+            #100 iK = iK ^ 'b100000;
+            #10 iK = iK ^ 'b100000;
+        end
         iClr = 1;
         #100;
         $finish;
