@@ -3,15 +3,18 @@
 `include "register.v"
 
 module register_tb ();
+    parameter BITWIDTH = 32;
 
     logic iClk;
     logic iRstN;
     logic iEn;
     logic iClr;
-    logic [`BITWIDTH-1 : 0] iData;
-    logic [`BITWIDTH-1 : 0] oData;
+    logic [BITWIDTH-1 : 0] iData;
+    logic [BITWIDTH-1 : 0] oData;
 
-    register u_register (
+    register #(
+        .BITWIDTH(BITWIDTH)
+    ) u_register (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
