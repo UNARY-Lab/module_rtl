@@ -14,7 +14,8 @@ module multiplier_32b_reg_pp_tb ();
 
     // This code is used to delay the expected output
     parameter PPCYCLE = 1;
-    logic [2*64-1 : 0] result [PPCYCLE-1:0];
+    parameter OBITWIDTH = 2*32;
+    logic [OBITWIDTH-1 : 0] result [PPCYCLE-1:0];
     logic result_correct;
 
     genvar i;
