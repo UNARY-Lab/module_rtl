@@ -19,8 +19,8 @@ module shift_register_tb ();
     // dont change code below
     logic [OBITWIDTH-1 : 0] result [PPCYCLE-1:0];
     logic result_correct;
-    logic [OBITWIDTH-1 : 0] result_correct;
-    assign result_correct = iData;
+    logic [OBITWIDTH-1 : 0] result_expected;
+    assign result_expected = iData;
 
     genvar i;
     generate
@@ -39,7 +39,7 @@ module shift_register_tb ();
         if (~iRstN) begin
             result[0] <= 0;
         end else begin
-            result[0] <= result_correct;
+            result[0] <= result_expected;
         end
     end
     assign result_correct = (oData == result[PPCYCLE-1]);
