@@ -3,16 +3,19 @@
 `include "adder.v"
 
 module adder_tb ();
+    parameter BITWIDTH = 32;
 
     logic iClk;
     logic iRstN;
     logic iEn;
     logic iClr;
-    logic [`BITWIDTH-1 : 0] iData0;
-    logic [`BITWIDTH-1 : 0] iData1;
-    logic [`BITWIDTH : 0] oData;
+    logic [BITWIDTH-1 : 0] iData0;
+    logic [BITWIDTH-1 : 0] iData1;
+    logic [BITWIDTH : 0] oData;
 
-    adder u_adder (
+    adder #(
+        .BITWIDTH(BITWIDTH)
+    ) u_adder (
         .iData0(iData0),
         .iData1(iData1),
         .oData(oData)
