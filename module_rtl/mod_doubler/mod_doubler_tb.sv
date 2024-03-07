@@ -3,19 +3,28 @@
 `include "mod_doubler.v"
 
 module mod_doubler_tb ();
+    parameter BITWIDTH = 32;
 
     logic iClk;
     logic iRstN;
     logic iEn;
     logic iClr;
-    logic [`BITWIDTH-1 : 0] iData;
-    logic [`BITWIDTH-1 : 0] iQ;
-    logic [`BITWIDTH-1 : 0] oData;
-    logic [`BITWIDTH-1 : 0] result;
+    logic [BITWIDTH-1 : 0] iData;
+    logic [BITWIDTH-1 : 0] iMod;
+    logic [BITWIDTH-1 : 0] oData;
 
-    mod_doubler u_mod_doubler (
+    logic result_correct;
+    logic [BITWIDTH-1 : 0] result;
+    logic [BITWIDTH : 0] sum;
+    assign sum = iData * 2;
+    assign result = sum % iMod;
+    assign result_correct = (oData == result);
+
+    mod_doubler #(
+        .BITWIDTH(BITWIDTH)
+    )u_mod_doubler (
         .iData(iData),
-        .iQ(iQ),
+        .iMod(iMod),
         .oData(oData)
     );
 
@@ -32,40 +41,15 @@ module mod_doubler_tb ();
         iRstN = 0;
         iEn = 1;
         iClr = 0;
-        iData = 'd10;
-        iQ = 'd23;
-        result = (iData * 2) % iQ;
+        iData = 'd0;
+        iMod = 'd23;
 
-        #15;
+        #205;
         iRstN = 1;
-        #10;
-        iQ = 'd22;
-        result = (iData * 2) % iQ;
-        #10;
-        iQ = 'd21;
-        result = (iData * 2) % iQ;
-        #10;
-        iQ = 'd20;
-        result = (iData * 2) % iQ;
-        #10;
-        iQ = 'd19;
-        result = (iData * 2) % iQ;
-        #10;
-        iQ = 'd18;
-        result = (iData * 2) % iQ;
-        #10;
-        iQ = 'd17;
-        result = (iData * 2) % iQ;
-        #10;
-        iQ = 'd16;
-        result = (iData * 2) % iQ;
-        #10;
-        iQ = 'd15;
-        result = (iData * 2) % iQ;
-        #10;
-        iQ = 'd14;
-        result = (iData * 2) % iQ;
-        #400;
+        repeat (100)
+        #10 {iData} = {$urandom_range(iMod-1)};
+        iClr = 1;
+        #100;
         $finish;
     end
 

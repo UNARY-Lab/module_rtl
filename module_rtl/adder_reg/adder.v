@@ -6,7 +6,7 @@ module adder #(
 )(
     input wire [BITWIDTH-1 : 0] iData0,
     input wire [BITWIDTH-1 : 0] iData1,
-    output reg [BITWIDTH : 0] oData
+    output wire [BITWIDTH : 0] oData
 );
 
     assign oData = iData0 + iData1;

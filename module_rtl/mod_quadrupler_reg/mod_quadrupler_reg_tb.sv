@@ -3,23 +3,59 @@
 `include "mod_quadrupler_reg.v"
 
 module mod_quadrupler_reg_tb ();
+    parameter BITWIDTH = 32;
 
     logic iClk;
     logic iRstN;
     logic iEn;
     logic iClr;
-    logic [`BITWIDTH-1 : 0] iData;
-    logic [`BITWIDTH-1 : 0] iQ;
-    logic [`BITWIDTH-1 : 0] oData;
-    logic [`BITWIDTH-1 : 0] result;
+    logic [BITWIDTH-1 : 0] iData;
+    logic [BITWIDTH-1 : 0] iMod;
+    logic [BITWIDTH-1 : 0] oData;
+    
+    // This code is used to delay the expected output
+    parameter PPCYCLE = 1;
+    parameter OBITWIDTH = BITWIDTH;
 
-    mod_quadrupler_reg u_mod_quadrupler_reg (
+    logic [OBITWIDTH-1 : 0] result [PPCYCLE-1:0];
+    logic result_correct;
+    logic [OBITWIDTH-1 : 0] result_expected;
+    logic [OBITWIDTH : 0] sum;
+    assign sum = iData * 4;
+    assign result_expected = sum % iMod;
+
+    genvar i;
+    generate
+        for (i = 1; i < PPCYCLE; i = i + 1) begin
+            always@(posedge iClk or negedge iRstN) begin
+                if (~iRstN) begin
+                    result[i] <= 0;
+                end else begin
+                    result[i] <= result[i-1];
+                end
+            end
+        end
+    endgenerate
+
+    always@(posedge iClk or negedge iRstN) begin
+        if (~iRstN) begin
+            result[0] <= 0;
+        end else begin
+            result[0] <= result_expected;
+        end
+    end
+    assign result_correct = (oData == result[PPCYCLE-1]);
+    // end here
+
+    mod_quadrupler_reg #(
+        .BITWIDTH(BITWIDTH)
+    ) u_mod_quadrupler_reg (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
         .iClr(iClr),
         .iData(iData),
-        .iQ(iQ),
+        .iMod(iMod),
         .oData(oData)
     );
 
@@ -36,40 +72,15 @@ module mod_quadrupler_reg_tb ();
         iRstN = 0;
         iEn = 1;
         iClr = 0;
-        iData = 'd10;
-        iQ = 'd23;
-        result = (iData * 4) % iQ;
+        iData = 'd0;
+        iMod = 'd23;
 
-        #15;
+        #205;
         iRstN = 1;
-        #10;
-        iQ = 'd22;
-        result = (iData * 4) % iQ;
-        #10;
-        iQ = 'd21;
-        result = (iData * 4) % iQ;
-        #10;
-        iQ = 'd20;
-        result = (iData * 4) % iQ;
-        #10;
-        iQ = 'd19;
-        result = (iData * 4) % iQ;
-        #10;
-        iQ = 'd18;
-        result = (iData * 4) % iQ;
-        #10;
-        iQ = 'd17;
-        result = (iData * 4) % iQ;
-        #10;
-        iQ = 'd16;
-        result = (iData * 4) % iQ;
-        #10;
-        iQ = 'd15;
-        result = (iData * 4) % iQ;
-        #10;
-        iQ = 'd14;
-        result = (iData * 4) % iQ;
-        #400;
+        repeat (100)
+        #10 {iData} = {$urandom_range(iMod-1)};
+        iClr = 1;
+        #100;
         $finish;
     end
 

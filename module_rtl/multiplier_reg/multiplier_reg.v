@@ -1,34 +1,41 @@
 `ifndef multiplier_reg
 `define multiplier_reg
 
-`include "multiplier_reg.def"
+`include "multiplier.v"
+`include "register.v"
 
-
-module multiplier_reg (
+module multiplier_reg #(
+    parameter BITWIDTH = 32
+)(
     input wire iClk,
     input wire iRstN,
     input wire iEn,
     input wire iClr,
-    input wire [`BITWIDTH-1 : 0] iData0,
-    input wire [`BITWIDTH-1 : 0] iData1,
-    output reg [2*`BITWIDTH-1 : 0] oData
+    input wire [BITWIDTH-1 : 0] iData0,
+    input wire [BITWIDTH-1 : 0] iData1,
+    output wire [2*BITWIDTH-1 : 0] oData
 );
 
-    always@(posedge iClk or negedge iRstN) begin
-        if (~iRstN) begin
-            oData <= 0;
-        end else begin
-            if (iClr) begin
-                oData <= 0;
-            end else begin
-                if (iEn) begin
-                    oData <= iData0 * iData1;
-                end else begin
-                    oData <= oData;
-                end
-            end
-        end
-    end
+    wire [2*BITWIDTH-1 : 0] prod;
+
+    multiplier #(
+        .BITWIDTH(BITWIDTH)
+    ) u_multiplier (
+        .iData0(iData0),
+        .iData1(iData1),
+        .oData(prod)
+    );
+
+    register #(
+        .BITWIDTH(2*BITWIDTH)
+    ) u_register (
+        .iClk(iClk),
+        .iRstN(iRstN),
+        .iEn(iEn),
+        .iClr(iClr),
+        .iData(prod),
+        .oData(oData)
+    );
     
 endmodule
 

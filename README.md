@@ -14,6 +14,7 @@
 |multiplier_128b_reg|||
 |outerprodrc|&check;||
 |register|&check;||
+|shift_register|&check;||
 |sobolrng|&check;||
 
 

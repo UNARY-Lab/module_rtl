@@ -73,7 +73,7 @@ module adder_reg_tb ();
         iData0 = 'd0;
         iData1 = 'd0;
         
-        #200;
+        #205;
         iRstN = 1;
         repeat (100)
         #10 {iData0, iData1} = {$urandom(), $urandom()};

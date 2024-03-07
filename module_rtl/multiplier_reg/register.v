@@ -1,7 +1,7 @@
-`ifndef mod_accumulator
-`define mod_accumulator
+`ifndef register
+`define register
 
-module mod_accumulator #(
+module register #(
     parameter BITWIDTH = 32
 )(
     input wire iClk,
@@ -9,13 +9,8 @@ module mod_accumulator #(
     input wire iEn,
     input wire iClr,
     input wire [BITWIDTH-1 : 0] iData,
-    input wire [BITWIDTH-1 : 0] iMod,
     output reg [BITWIDTH-1 : 0] oData
 );
-
-    wire [BITWIDTH : 0] oSum;
-
-    assign oSum = iData + oData;
 
     always@(posedge iClk or negedge iRstN) begin
         if (~iRstN) begin
@@ -25,7 +20,7 @@ module mod_accumulator #(
                 oData <= 0;
             end else begin
                 if (iEn) begin
-                    oData <= (oSum < iMod) ? oSum[BITWIDTH-1 : 0] : (oSum - iMod);
+                    oData <= iData;
                 end else begin
                     oData <= oData;
                 end

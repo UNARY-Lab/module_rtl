@@ -13,7 +13,7 @@ module mod_adder_reg #(
     input wire iClr,
     input wire [BITWIDTH-1 : 0] iData0,
     input wire [BITWIDTH-1 : 0] iData1,
-    input wire [BITWIDTH-1 : 0] iQ,
+    input wire [BITWIDTH-1 : 0] iMod,
     output wire [BITWIDTH-1 : 0] oData
 );
 
@@ -24,7 +24,7 @@ module mod_adder_reg #(
     ) u_mod_adder (
         .iData0(iData0),
         .iData1(iData1),
-        .iQ(iQ),
+        .iMod(iMod),
         .oData(oSum)
     );
 

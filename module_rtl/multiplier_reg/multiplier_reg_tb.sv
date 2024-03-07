@@ -3,16 +3,19 @@
 `include "multiplier_reg.v"
 
 module multiplier_reg_tb ();
-
+    parameter BITWIDTH = 32;
+    
     logic iClk;
     logic iRstN;
     logic iEn;
     logic iClr;
-    logic [`BITWIDTH-1 : 0] iData0;
-    logic [`BITWIDTH-1 : 0] iData1;
-    logic [2*`BITWIDTH-1 : 0] oData;
+    logic [BITWIDTH-1 : 0] iData0;
+    logic [BITWIDTH-1 : 0] iData1;
+    logic [2*BITWIDTH-1 : 0] oData;
 
-    multiplier_reg u_multiplier_reg (
+    multiplier_reg #(
+        .BITWIDTH(BITWIDTH)
+    ) u_multiplier_reg (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),

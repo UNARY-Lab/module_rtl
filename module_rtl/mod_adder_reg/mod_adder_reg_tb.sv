@@ -11,19 +11,19 @@ module mod_adder_reg_tb ();
     logic iClr;
     logic [BITWIDTH-1 : 0] iData0;
     logic [BITWIDTH-1 : 0] iData1;
-    logic [BITWIDTH-1 : 0] iQ;
+    logic [BITWIDTH-1 : 0] iMod;
     logic [BITWIDTH-1 : 0] oData;
 
     // This code is used to delay the expected output
     parameter PPCYCLE = 1;
     parameter OBITWIDTH = BITWIDTH;
-    // dont change code below
+
     logic [OBITWIDTH-1 : 0] result [PPCYCLE-1:0];
     logic result_correct;
     logic [OBITWIDTH-1 : 0] result_expected;
     logic [OBITWIDTH : 0] sum;
     assign sum = iData0 + iData1;
-    assign result_expected = sum % iQ;
+    assign result_expected = sum % iMod;
 
     genvar i;
     generate
@@ -57,7 +57,7 @@ module mod_adder_reg_tb ();
         .iClr(iClr),
         .iData0(iData0),
         .iData1(iData1),
-        .iQ(iQ),
+        .iMod(iMod),
         .oData(oData)
     );
 
@@ -76,12 +76,12 @@ module mod_adder_reg_tb ();
         iClr = 0;
         iData0 = 'd0;
         iData1 = 'd0;
-        iQ = 'd23;
+        iMod = 'd23;
 
         #205;
         iRstN = 1;
         repeat (100)
-        #10 {iData0, iData1} = {$urandom_range(iQ-1), $urandom_range(iQ-1)};
+        #10 {iData0, iData1} = {$urandom_range(iMod-1), $urandom_range(iMod-1)};
         iClr = 1;
         #100;
         $finish;

@@ -10,7 +10,7 @@ module mod_accumulator_tb ();
     logic iEn;
     logic iClr;
     logic [BITWIDTH-1 : 0] iData;
-    logic [BITWIDTH-1 : 0] iQ;
+    logic [BITWIDTH-1 : 0] iMod;
     logic [BITWIDTH-1 : 0] oData;
 
     mod_accumulator #(
@@ -21,7 +21,7 @@ module mod_accumulator_tb ();
         .iEn(iEn),
         .iClr(iClr),
         .iData(iData),
-        .iQ(iQ),
+        .iMod(iMod),
         .oData(oData)
     );
 
@@ -39,7 +39,7 @@ module mod_accumulator_tb ();
         iEn = 1;
         iClr = 0;
         iData = 'd10;
-        iQ = 13;
+        iMod = 13;
         
         #15;
         iRstN = 1;

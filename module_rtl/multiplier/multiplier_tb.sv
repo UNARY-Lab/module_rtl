@@ -3,16 +3,19 @@
 `include "multiplier.v"
 
 module multiplier_tb ();
+    parameter BITWIDTH = 32;
 
     logic iClk;
     logic iRstN;
     logic iEn;
     logic iClr;
-    logic [`BITWIDTH-1 : 0] iData0;
-    logic [`BITWIDTH-1 : 0] iData1;
-    logic [2*`BITWIDTH-1 : 0] oData;
+    logic [BITWIDTH-1 : 0] iData0;
+    logic [BITWIDTH-1 : 0] iData1;
+    logic [2*BITWIDTH-1 : 0] oData;
 
-    multiplier u_multiplier (
+    multiplier #(
+        .BITWIDTH(BITWIDTH)
+    ) u_multiplier (
         .iData0(iData0),
         .iData1(iData1),
         .oData(oData)
