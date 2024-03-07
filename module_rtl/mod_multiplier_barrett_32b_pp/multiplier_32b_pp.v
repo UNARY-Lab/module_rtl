@@ -1,7 +1,8 @@
-`ifndef multiplier_32b_reg
-`define multiplier_32b_reg
+`ifndef multiplier_32b_pp
+`define multiplier_32b_pp
 
-module multiplier_32b_reg (
+// this module takes 1 cycles to finish
+module multiplier_32b_pp (
     input wire iClk,
     input wire iRstN,
     input wire iEn,
