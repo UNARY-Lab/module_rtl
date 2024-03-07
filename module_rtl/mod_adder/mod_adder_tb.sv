@@ -13,7 +13,13 @@ module mod_adder_tb ();
     logic [BITWIDTH-1 : 0] iData1;
     logic [BITWIDTH-1 : 0] iQ;
     logic [BITWIDTH-1 : 0] oData;
+
+    logic result_correct;
     logic [BITWIDTH-1 : 0] result;
+    logic [BITWIDTH : 0] sum;
+    assign sum = iData0 + iData1;
+    assign result = sum % iQ;
+    assign result_correct = (oData == result);
 
     mod_adder #(
         .BITWIDTH(BITWIDTH)
@@ -31,47 +37,23 @@ module mod_adder_tb ();
         $dumpfile("mod_adder.vcd"); $dumpvars;
     end
 
+    
     initial
     begin
         iClk = 1;
         iRstN = 0;
         iEn = 1;
         iClr = 0;
-        iData0 = 'd10;
-        iData1 = 'd20;
+        iData0 = 'd0;
+        iData1 = 'd0;
         iQ = 'd23;
-        result = (iData0 + iData1) % iQ;
 
-        #15;
+        #200;
         iRstN = 1;
-        #10;
-        iQ = 'd24;
-        result = (iData0 + iData1) % iQ;
-        #10;
-        iQ = 'd25;
-        result = (iData0 + iData1) % iQ;
-        #10;
-        iQ = 'd26;
-        result = (iData0 + iData1) % iQ;
-        #10;
-        iQ = 'd27;
-        result = (iData0 + iData1) % iQ;
-        #10;
-        iQ = 'd28;
-        result = (iData0 + iData1) % iQ;
-        #10;
-        iQ = 'd29;
-        result = (iData0 + iData1) % iQ;
-        #10;
-        iQ = 'd30;
-        result = (iData0 + iData1) % iQ;
-        #10;
-        iQ = 'd31;
-        result = (iData0 + iData1) % iQ;
-        #10;
-        iQ = 'd32;
-        result = (iData0 + iData1) % iQ;
-        #400;
+        repeat (100)
+        #10 {iData0, iData1} = {$urandom_range(iQ-1), $urandom_range(iQ-1)};
+        iClr = 1;
+        #100;
         $finish;
     end
 
