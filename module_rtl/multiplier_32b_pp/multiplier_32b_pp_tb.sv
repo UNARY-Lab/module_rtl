@@ -1,8 +1,8 @@
 `timescale 1ns/1ns
 
-`include "multiplier_32b_reg_pp.v"
+`include "multiplier_32b_pp.v"
 
-module multiplier_32b_reg_pp_tb ();
+module multiplier_32b_pp_tb ();
     
     logic iClk;
     logic iRstN;
@@ -23,7 +23,7 @@ module multiplier_32b_reg_pp_tb ();
     generate
         for (i = 1; i < PPCYCLE; i = i + 1) begin
             always@(posedge iClk or negedge iRstN) begin
-                if (iRstN) begin
+                if (~iRstN) begin
                     result[i] <= 0;
                 end else begin
                     result[i] <= result[i-1];
@@ -33,7 +33,7 @@ module multiplier_32b_reg_pp_tb ();
     endgenerate
 
     always@(posedge iClk or negedge iRstN) begin
-        if (iRstN) begin
+        if (~iRstN) begin
             result[0] <= 0;
         end else begin
             result[0] <= iData0 * iData1;
@@ -42,7 +42,7 @@ module multiplier_32b_reg_pp_tb ();
     assign result_correct = (oData == result[PPCYCLE-1]);
     // end here
 
-    multiplier_32b_reg_pp u_multiplier_32b_reg_pp (
+    multiplier_32b_pp u_multiplier_32b_pp (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
@@ -56,7 +56,7 @@ module multiplier_32b_reg_pp_tb ();
     always #5 iClk = ~iClk;
 
     initial begin
-        $dumpfile("multiplier_32b_reg_pp.vcd"); $dumpvars;
+        $dumpfile("multiplier_32b_pp.vcd"); $dumpvars;
     end
 
     initial

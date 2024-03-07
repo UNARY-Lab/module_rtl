@@ -1,8 +1,8 @@
-`ifndef multiplier_64b_reg_pp
-`define multiplier_64b_reg_pp
+`ifndef multiplier_64b_pp
+`define multiplier_64b_pp
 
 // this module takes 3 cycles to finish
-module multiplier_64b_reg_pp (
+module multiplier_64b_pp (
     input wire iClk,
     input wire iRstN,
     input wire iEn,
