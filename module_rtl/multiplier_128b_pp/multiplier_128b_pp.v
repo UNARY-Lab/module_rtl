@@ -1,17 +1,17 @@
-`ifndef multiplier_128b_reg
-`define multiplier_128b_reg
+`ifndef multiplier_128b_pp
+`define multiplier_128b_pp
 
-`include "multiplier_64b_reg.v"
+`include "multiplier_64b_pp.v"
 
-// this module take 7 cycles to finish
-module multiplier_128b_reg (
+// this module takes 5 cycles to finish
+module multiplier_128b_pp (
     input wire iClk,
     input wire iRstN,
     input wire iEn,
     input wire iClr,
     input wire [128-1 : 0] iData0,
     input wire [128-1 : 0] iData1,
-    output wire [2*128-1 : 0] oData
+    output reg [2*128-1 : 0] oData
 );
 
     wire [128-1:0] prod_ll;
@@ -19,8 +19,8 @@ module multiplier_128b_reg (
     wire [128-1:0] prod_lh;
     wire [128-1:0] prod_hh;
 
-    // 4 cycles in parallel
-    multiplier_64b_reg u_multiplier_64b_reg_ll (
+    // 3 cycles in parallel
+    multiplier_64b_pp u_multiplier_64b_pp_ll (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
@@ -30,8 +30,8 @@ module multiplier_128b_reg (
         .oData(prod_ll)
     );
 
-    // 4 cycles in parallel
-    multiplier_64b_reg u_multiplier_64b_reg_hl (
+    // 3 cycles in parallel
+    multiplier_64b_pp u_multiplier_64b_pp_hl (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
@@ -41,8 +41,8 @@ module multiplier_128b_reg (
         .oData(prod_hl)
     );
 
-    // 4 cycles in parallel
-    multiplier_64b_reg u_multiplier_64b_reg_lh (
+    // 3 cycles in parallel
+    multiplier_64b_pp u_multiplier_64b_pp_lh (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
@@ -52,8 +52,8 @@ module multiplier_128b_reg (
         .oData(prod_lh)
     );
 
-    // 4 cycles in parallel
-    multiplier_64b_reg u_multiplier_64b_reg_hh (
+    // 3 cycles in parallel
+    multiplier_64b_pp u_multiplier_64b_pp_hh (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
@@ -63,34 +63,43 @@ module multiplier_128b_reg (
         .oData(prod_hh)
     );
 
-    reg [128-1+1:0] sum_hl_lh;
+    // cycle 4
+    reg [64-1:0] prod_ll_l;
+    reg [64-1:0] prod_hh_h;
     reg [128-1+2:0] sum_mid;
-    reg [64-1+1:0] sum_hh_mid;
 
-    assign oData = {sum_hh_mid[64-1:0], sum_mid[128-1:0], prod_ll[64-1:0]};
+    wire [64-1+1:0] sum_hh_mid;
+    assign sum_hh_mid = prod_hh_h + sum_mid[128-1+2:128];
 
     always@(posedge iClk or negedge iRstN) begin
         if (~iRstN) begin
-            sum_hl_lh <= 0;
+            prod_ll_l <= 0;
+            prod_hh_h <= 0;
             sum_mid <= 0;
-            sum_hh_mid <= 0;
+            
+            oData <= 0;
         end else begin
             if (iClr) begin
-                sum_hl_lh <= 0;
+                prod_ll_l <= 0;
+                prod_hh_h <= 0;
                 sum_mid <= 0;
-                sum_hh_mid <= 0;
+
+                oData <= 0;
             end else begin
                 if (iEn) begin
-                    // 1 cycle
-                    sum_hl_lh <= prod_hl + prod_lh;
-                    // 1 cycle
-                    sum_mid <= sum_hl_lh + {prod_hh[64-1:0], prod_ll[128-1:64]};
-                    // 1 cycle
-                    sum_hh_mid <= prod_hh[128-1:64] + sum_mid[128-1+2:128];
+                    // cycle 4
+                    prod_ll_l <= prod_ll[64-1:0];
+                    prod_hh_h <= prod_hh[128-1:64];
+                    sum_mid <= prod_hl + prod_lh + {prod_hh[64-1:0], prod_ll[128-1:64]};
+                    
+                    // cycle 5
+                    oData <= {sum_hh_mid[64-1:0], sum_mid[128-1:0], prod_ll_l};
                 end else begin
-                    sum_hl_lh <= sum_hl_lh;
+                    prod_ll_l <= prod_ll_l;
+                    prod_hh_h <= prod_hh_h;
                     sum_mid <= sum_mid;
-                    sum_hh_mid <= sum_hh_mid;
+
+                    oData <= oData;
                 end
             end
         end
