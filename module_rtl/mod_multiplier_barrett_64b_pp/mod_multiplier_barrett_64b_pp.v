@@ -88,7 +88,6 @@ module mod_multiplier_barrett_64b_pp (
         end
     end
 
-    genvar i;
     generate
         for (i = 1; i < KDELAY; i = i + 1) begin
             always@(posedge iClk or negedge iRstN) begin
@@ -125,7 +124,6 @@ module mod_multiplier_barrett_64b_pp (
         end
     end
 
-    genvar i;
     generate
         for (i = 1; i < UDELAY; i = i + 1) begin
             always@(posedge iClk or negedge iRstN) begin
