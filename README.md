@@ -10,8 +10,12 @@
 |adder_bfloat16_reg|&check;||
 |fifo_sync|&check;||
 |multiplier_bfloat16_reg|&check;||
-|multiplier_64b_reg|||
-|multiplier_128b_reg|||
+|multiplier|&check;||
+|multiplier_32b_pp|&check;||
+|multiplier_64b_pp|&check;||
+|multiplier_128b_pp|&check;||
+|multiplier_bfloat16_reg|&check;||
+|multiplier_reg|&check;||
 |outerprodrc|&check;||
 |register|&check;||
 |shift_register|&check;||
@@ -25,9 +29,10 @@
 |mod_adder_reg|&check;||
 |mod_doubler|&check;||
 |mod_doubler_reg|&check;||
-|mod_multiplier_barrett_32b|||
-|mod_multiplier_barrett_64b|||
-|mod_multiplier_montgomery|||
+|mod_multiplier_barrett_32b_pp|&check;||
+|mod_multiplier_barrett_64b_pp|&check;||
+|mod_multiplier_montgomery_32b_pp|||
+|mod_multiplier_montgomery_64b_pp|||
 |mod_quadrupler|&check;||
 |mod_quadrupler_reg|&check;||
 
