@@ -1,55 +1,55 @@
-`ifndef mod_multiplier_barrett_32b_pp
-`define mod_multiplier_barrett_32b_pp
+`ifndef mod_multiplier_barrett_64b_pp
+`define mod_multiplier_barrett_64b_pp
 
-`include "multiplier_32b_pp.v"
 `include "multiplier_64b_pp.v"
+`include "multiplier_128b_pp.v"
 
 // implement Algorithm 1 in 'Conceptual Review on NTT and Comprehensive Review on Its Implementations'
 // another paper: 'Modular Reduction without Pre-Computation for Special Moduli' is using non 2 base
 // original paper: 'Implementing the Rivest Shamir and Adleman Public Key Encryption Algorithm on a Standard Digital Signal Processor'
 
-// this module needs 6 cycles to finish
-module mod_multiplier_barrett_32b_pp (
+// this module needs 12 cycles to finish
+module mod_multiplier_barrett_64b_pp (
     input wire iClk,
     input wire iRstN,
     input wire iEn,
     input wire iClr,
     // precomputed input
-    input wire [5 : 0] iK, // number of valid bits in iMod, which does not count the zero MSBs in iMod.
-    input wire [2*32-1 : 0] iU,
+    input wire [6 : 0] iK, // number of valid bits in iMod, which does not count the zero MSBs in iMod.
+    input wire [2*64-1 : 0] iU,
     // actual input
-    input wire [32-1 : 0] iData0,
-    input wire [32-1 : 0] iData1,
-    input wire [32-1 : 0] iMod,
-    output reg [32-1 : 0] oData
+    input wire [64-1 : 0] iData0,
+    input wire [64-1 : 0] iData1,
+    input wire [64-1 : 0] iMod,
+    output reg [64-1 : 0] oData
 );
 
     // only pipeline multiplication
     // bitwidth analysis can be found here: https://www.nayuki.io/page/barrett-reduction-algorithm
     // z = iData0 * iData1
-    wire [2*32-1 : 0] z;
+    wire [2*64-1 : 0] z;
     // m1 = z >> iK
-    wire [2*32-1 : 0] m1;
+    wire [2*64-1 : 0] m1;
     // m2 = iU * m1
-    wire [4*32-1 : 0] m2;
+    wire [4*64-1 : 0] m2;
     // m3 = m2 >> iK
-    wire [2*32-1 : 0] m3;
+    wire [2*64-1 : 0] m3;
     // m3q = m3 * iMod
-    wire [2*32-1 : 0] m3q;
-    wire [2*32-1 : 0] t;
+    wire [2*64-1 : 0] m3q;
+    wire [2*64-1 : 0] t;
 
-    parameter zcycle = 1;
-    parameter m2cycle = 3;
-    parameter m3cycle = 1;
+    parameter zcycle = 3;
+    parameter m2cycle = 5;
+    parameter m3cycle = 3;
 
     parameter ZDELAY = m2cycle + m3cycle; // m2 + m3
     reg [2*64-1 : 0] z_d [ZDELAY-1:0];
 
     parameter KDELAY = zcycle + m2cycle; // z + m2
-    reg [5 : 0] iK_d [KDELAY-1:0];
+    reg [6 : 0] iK_d [KDELAY-1:0];
 
     parameter UDELAY = zcycle; // z
-    reg [2*32-1 : 0] iU_d [UDELAY-1:0];
+    reg [2*64-1 : 0] iU_d [UDELAY-1:0];
     
     genvar i;
     generate
@@ -162,8 +162,8 @@ module mod_multiplier_barrett_32b_pp (
         end
     end
     
-    // 1 cycle
-    multiplier_32b_pp u_multiplier_32b_pp_z (
+    // 3 cycle
+    multiplier_64b_pp u_multiplier_64b_pp_z (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
@@ -175,9 +175,9 @@ module mod_multiplier_barrett_32b_pp (
 
     assign m1 = z >> iK_d[zcycle-1];
 
-    // 3 cycles
-    // iU will have more than 32 bits, thus m2 will have more than 32 bit
-    multiplier_64b_pp u_multiplier_64b_pp_m2 (
+    // 5 cycles
+    // iU will have more than 64 bits, thus m2 will have more than 64 bit
+    multiplier_128b_pp u_multiplier_128b_pp_m2 (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
@@ -189,8 +189,8 @@ module mod_multiplier_barrett_32b_pp (
 
     assign m3 = m2 >> iK_d[KDELAY-1];
 
-    // 1 cycles
-    multiplier_32b_pp u_multiplier_32b_pp_m3q (
+    // 3 cycles
+    multiplier_64b_pp u_multiplier_64b_pp_m3q (
         .iClk(iClk),
         .iRstN(iRstN),
         .iEn(iEn),
