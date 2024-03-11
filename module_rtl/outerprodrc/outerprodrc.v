@@ -31,10 +31,10 @@ module outerprodrc #(
                 .oData(sum[(i + 1) * `ROWNUM * `COLNUM * `OUTBITWIDTH - 1 : i * `ROWNUM * `COLNUM * `OUTBITWIDTH])
                 );
         end
-        always @(*) begin
-            for (i = 0; i < `ROWNUM; i = i + 1) begin
-                for (j = 0; j < `COLNUM; j = j + 1) begin
-                    for (k = 0; k < `HIDDEN; k = k + 1) begin
+        for (i = 0; i < `ROWNUM; i = i + 1) begin
+            for (j = 0; j < `COLNUM; j = j + 1) begin
+                for (k = 0; k < `HIDDEN; k = k + 1) begin
+                    always @(*) begin
                         oData[(i * j + 1) * 2*`OUTBITWIDTH - 1 : i * j * 2*`OUTBITWIDTH] = oData[(i * j + 1) * 2*`OUTBITWIDTH - 1 : i * j * 2*`OUTBITWIDTH] + sum[(k * i * j + 1) * `OUTBITWIDTH - 1 : k * i * j * `OUTBITWIDTH];
                     end
                 end
