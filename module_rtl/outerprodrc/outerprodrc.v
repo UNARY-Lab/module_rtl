@@ -13,7 +13,7 @@ module outerprodrc #(
     input wire iClr,
     input wire [`HIDDEN * `ROWNUM * `BITWIDTH - 1 : 0] iData0, // input vector from row
     input wire [`HIDDEN * `COLNUM * `BITWIDTH - 1 : 0] iData1, // input vector from col
-    output reg [`ROWNUM * `COLNUM * `OUTBITWIDTH - 1 : 0] oData
+    output reg [`ROWNUM * `COLNUM * 2*`OUTBITWIDTH - 1 : 0] oData
 );
     
     wire [`HIDDEN * `ROWNUM * `COLNUM * `OUTBITWIDTH - 1 : 0] sum;
