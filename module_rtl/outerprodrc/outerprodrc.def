@@ -5,3 +5,4 @@
 
 `define ROWNUM 16
 `define COLNUM 16
+`define HIDDEN 16
