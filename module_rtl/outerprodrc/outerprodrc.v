@@ -35,7 +35,9 @@ module outerprodrc #(
             for (j = 0; j < `COLNUM; j = j + 1) begin
                 for (k = 0; k < `HIDDEN; k = k + 1) begin
                     always @(*) begin
-                        oData[(i * j + 1) * 2*`OUTBITWIDTH - 1 : i * j * 2*`OUTBITWIDTH] = oData[(i * j + 1) * 2*`OUTBITWIDTH - 1 : i * j * 2*`OUTBITWIDTH] + sum[(k * i * j + 1) * `OUTBITWIDTH - 1 : k * i * j * `OUTBITWIDTH];
+                        oData[i * `COLNUM * 2*`OUTBITWIDTH + j *  2*`OUTBITWIDTH + 2*`OUTBITWIDTH - 1 : i * `COLNUM * 2*`OUTBITWIDTH + j *  2*`OUTBITWIDTH] = 
+                        oData[i * `COLNUM * 2*`OUTBITWIDTH + j *  2*`OUTBITWIDTH + 2*`OUTBITWIDTH - 1 : i * `COLNUM * 2*`OUTBITWIDTH + j *  2*`OUTBITWIDTH] + 
+                        sum[k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH];
                     end
                 end
             end
