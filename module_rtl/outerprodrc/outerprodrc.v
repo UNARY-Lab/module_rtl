@@ -2,7 +2,7 @@
 `define outerprodrc
 
 `include "outerprodrc.def"
-`include "outerprodrc_vvm.v"
+`include "outerprodrc_vvm_bit.v"
 
 // this code implements ugemm as vector-vector outer product with binary output
 module outerprodrc #(
@@ -13,32 +13,41 @@ module outerprodrc #(
     input wire iClr,
     input wire [`HIDDEN * `ROWNUM * `BITWIDTH - 1 : 0] iData0, // input vector from row
     input wire [`HIDDEN * `COLNUM * `BITWIDTH - 1 : 0] iData1, // input vector from col
-    output reg [`ROWNUM * `COLNUM * 2*`OUTBITWIDTH - 1 : 0] oData
+    output reg [`ROWNUM * `COLNUM * `OUTBITWIDTH - 1 : 0] oData
 );
     
+    wire [`HIDDEN * `ROWNUM * `COLNUM - 1 : 0] sign;
+    wire [`HIDDEN * `ROWNUM * `COLNUM - 1 : 0] bit;
+
     wire [`HIDDEN * `ROWNUM * `COLNUM * `OUTBITWIDTH - 1 : 0] sum;
 
     genvar i, j, k;
     generate
         for (i = 0; i < `HIDDEN; i = i + 1) begin
-            outerprodrc_vvm u_outerprodrc_vvm(
+            outerprodrc_vvm_bit u_outerprodrc_vvm_bit(
                 .iClk(iClk),
                 .iRstN(iRstN),
                 .iEn(iEn),
                 .iClr(iClr),
                 .iData0(iData0[(i + 1) * `ROWNUM * `BITWIDTH - 1 : i * `ROWNUM * `BITWIDTH]), // input vector from row
                 .iData1(iData1[(i + 1) * `COLNUM * `BITWIDTH - 1 : i * `COLNUM * `BITWIDTH]), // input vector from col
-                .oData(sum[(i + 1) * `ROWNUM * `COLNUM * `OUTBITWIDTH - 1 : i * `ROWNUM * `COLNUM * `OUTBITWIDTH])
+                .oSign(sign[(i + 1) * `ROWNUM * `COLNUM - 1 : i * `ROWNUM * `COLNUM])
+                .oBit(bit[(i + 1) * `ROWNUM * `COLNUM - 1 : i * `ROWNUM * `COLNUM])
                 );
         end
         for (i = 0; i < `ROWNUM; i = i + 1) begin
             for (j = 0; j < `COLNUM; j = j + 1) begin
-                for (k = 0; k < `HIDDEN; k = k + 1) begin
-                    always @(*) begin
-                        oData[i * `COLNUM * 2*`OUTBITWIDTH + j *  2*`OUTBITWIDTH + 2*`OUTBITWIDTH - 1 : i * `COLNUM * 2*`OUTBITWIDTH + j *  2*`OUTBITWIDTH] = 
-                        oData[i * `COLNUM * 2*`OUTBITWIDTH + j *  2*`OUTBITWIDTH + 2*`OUTBITWIDTH - 1 : i * `COLNUM * 2*`OUTBITWIDTH + j *  2*`OUTBITWIDTH] + 
-                        sum[k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH];
+                assign sum[i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH]
+                        = sign[i * `COLNUM + j] & bit[i * `COLNUM + j];
+                for (k = 1; k < `HIDDEN; k = k + 1) begin
+                    assign sum[k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH]
+                        = sum[k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH]
+                        + sign[k * `ROWNUM * `COLNUM + i * `COLNUM + j] & sign[k * `ROWNUM * `COLNUM + i * `COLNUM + j];
                     end
+                always @(posedge clk ) begin
+                    oData[i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH] <= 
+                        sum[`HIDDEN * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : `HIDDEN * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH];
+                end
                 end
             end
         end

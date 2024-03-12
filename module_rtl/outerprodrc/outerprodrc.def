@@ -1,7 +1,7 @@
 `define BITWIDTH 8
 `define BITWIDTH8
 `define LOGBITWIDTH $clog2(`BITWIDTH)
-`define OUTBITWIDTH 8
+`define OUTBITWIDTH 16
 
 `define ROWNUM 16
 `define COLNUM 16
