@@ -44,7 +44,7 @@ module outerprodrc #(
                         = sum[k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH]
                         + osign[k * `ROWNUM * `COLNUM + i * `COLNUM + j] & obit[k * `ROWNUM * `COLNUM + i * `COLNUM + j];
                 end
-                always @(posedge clk) begin
+                always @(posedge iClk) begin
                     oData[i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH] <= 
                         sum[(`HIDDEN - 1) * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : (`HIDDEN - 1) * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH];
                 end
