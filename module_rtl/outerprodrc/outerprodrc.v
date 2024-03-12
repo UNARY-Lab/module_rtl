@@ -38,15 +38,23 @@ module outerprodrc #(
         for (i = 0; i < `ROWNUM; i = i + 1) begin
             for (j = 0; j < `COLNUM; j = j + 1) begin
                 assign sum[i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH]
-                        = {0, osign[i * `COLNUM + j] & obit[i * `COLNUM + j]};
+                        = osign[i * `COLNUM + j] ? ({(`OUTBITWIDTH){1'b0}} - obit[i * `COLNUM + j]) : ({(`OUTBITWIDTH){1'b0}} + obit[i * `COLNUM + j]);
                 for (k = 1; k < `HIDDEN; k = k + 1) begin
                     assign sum[k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH]
-                        = sum[k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : k * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH]
-                        + osign[k * `ROWNUM * `COLNUM + i * `COLNUM + j] & obit[k * `ROWNUM * `COLNUM + i * `COLNUM + j];
+                        = osign[k * `ROWNUM * `COLNUM + i * `COLNUM + j] ? 
+                        (sum[(k-1) * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : (k-1) * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH]
+                        - obit[k * `ROWNUM * `COLNUM + i * `COLNUM + j]) : 
+                        (sum[(k-1) * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : (k-1) * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH]
+                        + obit[k * `ROWNUM * `COLNUM + i * `COLNUM + j]);
                 end
-                always @(posedge iClk) begin
-                    oData[i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH] <= 
-                        sum[(`HIDDEN - 1) * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : (`HIDDEN - 1) * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH];
+                always @(posedge iClk or negedge iRstN) begin
+                    if (~iRstN) begin
+                        oData[i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH] <= 0;
+                    end else begin
+                        oData[i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH] <= 
+                            oData[i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH] + 
+                            sum[(`HIDDEN - 1) * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH + `OUTBITWIDTH - 1 : (`HIDDEN - 1) * `ROWNUM * `COLNUM * `OUTBITWIDTH + i * `COLNUM * `OUTBITWIDTH + j * `OUTBITWIDTH];
+                    end
                 end
             end
         end
